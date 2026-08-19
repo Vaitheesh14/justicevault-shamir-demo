@@ -1,0 +1,326 @@
+:root {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-alt: #273449;
+  --color-border: #334155;
+  --color-text: #e2e8f0;
+  --color-text-dim: #94a3b8;
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-success: #22c55e;
+  --color-success-bg: #14532d;
+  --color-error: #ef4444;
+  --color-error-bg: #450a0a;
+  --color-warning-bg: #78350f;
+  --radius: 10px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  padding-bottom: 2rem;
+}
+
+.site-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  color: var(--color-text-dim);
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+}
+
+.warning-banner {
+  background: var(--color-warning-bg);
+  color: #fef3c7;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 1rem 1rem;
+  border-radius: var(--radius);
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+.card h3 {
+  font-size: 1rem;
+  color: var(--color-text-dim);
+}
+
+/* Dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.dashboard-item {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard-label {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-idle { background: var(--color-surface-alt); color: var(--color-text-dim); }
+.status-success { background: var(--color-success-bg); color: #86efac; }
+.status-error { background: var(--color-error-bg); color: #fca5a5; }
+
+/* Forms */
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin-bottom: 0.35rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+input[type="text"]:focus {
+  outline: 2px solid var(--color-primary);
+}
+
+.button-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+.btn-primary:hover { background: var(--color-primary-dark); }
+
+.btn-secondary {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-small {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+}
+
+/* Share cards */
+.share-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.share-card {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.share-card-header {
+  margin-bottom: 0.5rem;
+}
+
+.share-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.share-field {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  align-items: baseline;
+}
+
+.share-field span {
+  color: var(--color-text-dim);
+  font-size: 0.75rem;
+}
+
+.share-field code {
+  word-break: break-all;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.selected-count {
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+}
+
+.recovery-result {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.result-success {
+  background: var(--color-success-bg);
+  color: #86efac;
+}
+
+.result-error {
+  background: var(--color-error-bg);
+  color: #fca5a5;
+}
+
+/* Test results */
+.test-summary {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.test-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+
+.test-list li {
+  padding: 0.35rem 0;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.test-pass { color: #86efac; }
+.test-fail { color: #fca5a5; }
+
+.test-extra-heading {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin-top: 0.5rem;
+}
+
+/* Education */
+.education p, .education li {
+  font-size: 0.92rem;
+}
+
+.flow-diagram {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  text-align: center;
+  margin: 0.75rem 0;
+}
+
+.formula {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+  font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+}
+
+.site-footer {
+  text-align: center;
+  color: var(--color-text-dim);
+  font-size: 0.8rem;
+  padding: 1.5rem 1rem 0;
+}
+
+/* Small screens: stack dashboard/share cards to single column below 380px */
+@media (max-width: 380px) {
+  .dashboard-grid, .share-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
