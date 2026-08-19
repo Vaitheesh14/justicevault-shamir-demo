@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JusticeVault — Shamir's Secret Sharing 3-of-5 Demo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <h1>JusticeVault</h1>
+  <p class="subtitle">Shamir's Secret Sharing — 3-of-5 Demonstration</p>
+</header>
+
+<div class="warning-banner">
+  ⚠️ Educational Prototype — Do not use real government, police, court, financial, medical or personal data.
+</div>
+
+<main>
+
+  <!-- ================= DASHBOARD ================= -->
+  <section class="card" id="dashboard">
+    <h2>Dashboard</h2>
+    <div class="dashboard-grid">
+      <div class="dashboard-item">
+        <span class="dashboard-label">Scheme</span>
+        <span class="dashboard-value">3-of-5</span>
+      </div>
+      <div class="dashboard-item">
+        <span class="dashboard-label">Threshold</span>
+        <span class="dashboard-value">3</span>
+      </div>
+      <div class="dashboard-item">
+        <span class="dashboard-label">Total Shares</span>
+        <span class="dashboard-value">5</span>
+      </div>
+      <div class="dashboard-item">
+        <span class="dashboard-label">Status</span>
+        <span class="dashboard-value"><span id="statusBadge" class="status-badge status-idle">Ready</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTROLS: SPLIT ================= -->
+  <section class="card" id="splitSection">
+    <h2>1. Create Shares</h2>
+    <label for="secretInput">Secret</label>
+    <input type="text" id="secretInput" placeholder="Enter a secret (e.g. an encryption key)" maxlength="60">
+    <div class="button-row">
+      <button class="btn btn-secondary" id="useDemoSecretBtn">Use Demo Secret</button>
+      <button class="btn btn-primary" id="generateSharesBtn">Generate 5 Shares</button>
+    </div>
+
+    <div id="shareSection" hidden>
+      <h3>Generated Shares</h3>
+      <div id="shareCards" class="share-cards-grid"></div>
+      <button class="btn btn-secondary" id="copyAllBtn">Copy All Shares</button>
+    </div>
+  </section>
+
+  <!-- ================= CONTROLS: RECOVER ================= -->
+  <section class="card" id="recoverSection">
+    <h2>2. Recover Secret</h2>
+    <p class="hint">Select at least 3 shares above, then recover the secret.</p>
+    <p id="selectedCount" class="selected-count">0 of 5 shares selected</p>
+    <button class="btn btn-primary" id="recoverBtn">Recover Secret</button>
+    <p id="recoveryResult" class="recovery-result" hidden></p>
+  </section>
+
+  <!-- ================= CONTROLS: TESTS ================= -->
+  <section class="card" id="testSection">
+    <h2>3. Automatic Tests</h2>
+    <p class="hint">Runs the standard combinations: K1+K2+K3, K1+K3+K5, K2+K4+K5 (all should PASS), and K1+K2, K4 alone (both should be REJECTED).</p>
+    <button class="btn btn-primary" id="runTestsBtn">Run Automatic Tests</button>
+    <div id="testResultsSection" hidden>
+      <div id="testResults"></div>
+    </div>
+  </section>
+
+  <!-- ================= EDUCATIONAL CONTENT ================= -->
+  <section class="card education">
+    <h2>How It Works</h2>
+    <div class="flow-diagram">
+      Secret → Polynomial → 5 Shares → Any 3 Shares → Lagrange Interpolation → Original Secret
+    </div>
+    <p>
+      Shamir's Secret Sharing splits a single secret into several "shares" so that
+      no individual share reveals anything about the secret on its own. Only when
+      enough shares are combined (here, at least 3 out of 5) can the original
+      secret be reconstructed.
+    </p>
+    <p>
+      This demo builds a random quadratic polynomial whose constant term is the
+      secret itself. Each of the 5 shares is one point on that polynomial's curve.
+      Because a quadratic curve is uniquely determined by exactly 3 points, any 3
+      shares are enough to reconstruct the whole curve — and therefore the secret
+      hidden at its start. Any 2 points, however, could belong to infinitely many
+      different quadratics, so 2 shares reveal nothing.
+    </p>
+  </section>
+
+  <section class="card education">
+    <h2>How to Operate</h2>
+    <ol>
+      <li>Type a secret into the "Secret" field, or tap "Use Demo Secret."</li>
+      <li>Tap "Generate 5 Shares" to split it into shares K1–K5.</li>
+      <li>Tap "Copy Share" on any card to copy that single share, or "Copy All Shares" to copy all five at once.</li>
+      <li>Tick the checkboxes on at least 3 share cards.</li>
+      <li>Tap "Recover Secret." With 3 or more valid, non-duplicate shares, the original secret reappears. With fewer than 3, recovery is denied.</li>
+      <li>Tap "Run Automatic Tests" to see the demo verify several 3-share combinations (all succeed) and insufficient-share attempts (all correctly rejected).</li>
+    </ol>
+  </section>
+
+  <section class="card education">
+    <h2>Mathematics</h2>
+    <p>
+      The scheme works over a finite field GF(p), where p is the well-known
+      Mersenne prime 2⁵²¹ − 1 (the same modulus used for the NIST P-521 elliptic
+      curve). All arithmetic — addition, multiplication, and the polynomial
+      evaluations below — is performed modulo p, using JavaScript's BigInt type
+      throughout so nothing is rounded or truncated by ordinary floating-point
+      numbers.
+    </p>
+    <p>The polynomial used is degree 2:</p>
+    <p class="formula">f(x) = a₀ + a₁x + a₂x² (mod p)</p>
+    <p>
+      where a₀ is the secret and a₁, a₂ are random coefficients generated with
+      <code>crypto.getRandomValues()</code> — a cryptographically secure random
+      source, never <code>Math.random()</code>.
+    </p>
+    <p>
+      Share <em>i</em> is the point (i, f(i) mod p) for i = 1 … 5. Given any 3
+      shares (x₁,y₁), (x₂,y₂), (x₃,y₃), Lagrange interpolation reconstructs f(0):
+    </p>
+    <p class="formula">f(0) = Σ yᵢ · Π (0 − xⱼ)/(xᵢ − xⱼ), for j ≠ i (mod p)</p>
+    <p>
+      A degree-2 polynomial has 3 unknown coefficients, so exactly 3 independent
+      equations (points) are needed to solve for them uniquely — this is why the
+      threshold is 3. With only 2 points, one degree of freedom remains
+      unconstrained, so every possible secret value remains equally consistent
+      with the data: this is information-theoretic security, not merely
+      computational difficulty.
+    </p>
+    <p>
+      <strong>Important distinction:</strong> Shamir's Secret Sharing is a
+      secret-sharing / threshold access-control technique. It is <strong>not
+      encryption</strong> — it does not scramble data for confidentiality against
+      a single party; it distributes trust so that no single party (or small
+      group below the threshold) can act alone.
+    </p>
+  </section>
+
+  <section class="card education">
+    <h2>Security &amp; Limitations</h2>
+    <ul>
+      <li>This is an educational, in-browser prototype for demonstration purposes only.</li>
+      <li>It has not undergone professional security review or penetration testing.</li>
+      <li>Secrets are handled entirely client-side in this demo and are never sent anywhere — but this page also has no protections against a compromised device, browser extension, or shoulder-surfing.</li>
+      <li>Production systems must use professionally reviewed, audited cryptographic libraries and follow secure key-management practices (secure share transport, secure storage, access logging, revocation, etc.) — none of which this demo implements.</li>
+      <li>Do not use real government, police, court, financial, medical, or personal data with this demo.</li>
+    </ul>
+  </section>
+
+  <section class="card education">
+    <h2>Future JusticeVault Architecture</h2>
+    <p>
+      This demo illustrates one building block of a proposed future
+      architecture — it is <strong>not</strong> the production JusticeVault
+      system, and no claim is made that any government, police department, or
+      court currently uses this exact implementation.
+    </p>
+    <div class="flow-diagram">
+      Digital Evidence → AES-256 Encryption → Encrypted Evidence + AES Key →
+      Shamir 3-of-5 protects AES Key → K1 K2 K3 K4 K5 → Any 3 Authorized Parties →
+      Recover AES Key → Decrypt Evidence
+    </div>
+    <p>
+      Note the key design point: Shamir's Secret Sharing would protect the
+      <strong>AES encryption key</strong>, not the evidence file itself. The
+      (typically large) evidence file stays encrypted with AES-256; only the
+      much smaller key is split into shares, so that no fewer than 3 authorized
+      parties acting together can ever decrypt the evidence.
+    </p>
+    <p>Proposed future components (not implemented in this demo):</p>
+    <ul>
+      <li>Authentication</li>
+      <li>Role-Based Access Control (RBAC)</li>
+      <li>AES-256 encryption of evidence files</li>
+      <li>Shamir 3-of-5 protection of the AES key (this demo)</li>
+      <li>SHA-256 integrity verification</li>
+      <li>Digital signatures</li>
+      <li>Chain-of-custody tracking</li>
+      <li>Audit logging</li>
+      <li>Secure submission workflow</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>JusticeVault Shamir Demo — Educational prototype. Not for production or real sensitive data.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
